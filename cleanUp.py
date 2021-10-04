@@ -113,7 +113,7 @@ pwd = os.getcwd()
 html_template = open(f"{pwd}\\template\\template.html", "r" ).read()
 time_taken = datetime.datetime.now() - start_time
 print(time_taken)
-with open(f"{pwd}\\result.html", "w") as html:
+with open(f"{pwd}\\result.html", "w", encoding="UTF-8") as html:
     html_temp = html_template.replace( "<%=PERFORMACE%>", str(time_taken) )
     html_temp = html_temp.replace("<%=BODY%>", table_data) 
     html.write(html_temp)  
