@@ -1,0 +1,411 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <title>Duplicate Images</title>  
+<style>
+
+.dbox {
+    position: relative;
+    background: rgb(3, 139, 10);
+    background: -moz-linear-gradient(top, rgb(95, 252, 108) 0%, rgb(3, 139, 10) 100%);
+    background: -webkit-linear-gradient(top, rgba(95, 252, 108) 0%, rgba(3, 139, 10) 100%);
+    background: linear-gradient(to bottom, rgba(95, 252, 108) 0%, rgba(3, 139, 10) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#ff5641', endColorstr='#fd3261', GradientType=0);
+    border-radius: 4px;
+    text-align: center;
+    margin: 60px 0 50px;
+}
+.dbox__icon {
+    position: absolute;
+    transform: translateY(-50%) translateX(-50%);
+    left: 50%;
+}
+.dbox__icon:before {
+    width: 75px;
+    height: 75px;
+    position: absolute;
+    background: #fda299;
+    background: rgba(253, 162, 153, 0.34);
+    content: '';
+    border-radius: 50%;
+    left: -17px;
+    top: -17px;
+    z-index: -2;
+}
+.dbox__icon:after {
+    width: 60px;
+    height: 60px;
+    position: absolute;
+    background: #f79489;
+    background: rgba(247, 148, 137, 0.91);
+    content: '';
+    border-radius: 50%;
+    left: -10px;
+    top: -10px;
+    z-index: -1;
+}
+.dbox__icon > i {
+    background: #ff5444;
+    border-radius: 50%;
+    line-height: 40px;
+    color: #FFF;
+    width: 40px;
+    height: 40px;
+	font-size:22px;
+}
+.dbox__body {
+    padding: 50px 20px;
+}
+.dbox__count {
+    display: block;
+    font-size: 30px;
+    color: #FFF;
+    font-weight: 300;
+}
+.dbox__title {
+    font-size: 13px;
+    color: #FFF;
+    color: rgba(255, 255, 255, 0.81);
+}
+.dbox__action {
+    transform: translateY(-50%) translateX(-50%);
+    position: absolute;
+    left: 50%;
+}
+.dbox__action__btn {
+    border: none;
+    background: #FFF;
+    border-radius: 19px;
+    padding: 7px 16px;
+    text-transform: uppercase;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: .5px;
+    color: #003e85;
+    box-shadow: 0 3px 5px #d4d4d4;
+}
+
+
+.dbox--color-2 {
+    background: rgb(252, 190, 27);
+    background: -moz-linear-gradient(top, rgba(252, 190, 27, 1) 1%, rgba(248, 86, 72, 1) 99%);
+    background: -webkit-linear-gradient(top, rgba(252, 190, 27, 1) 1%, rgba(248, 86, 72, 1) 99%);
+    background: linear-gradient(to bottom, rgba(252, 190, 27, 1) 1%, rgba(248, 86, 72, 1) 99%);
+    filter: progid: DXImageTransform.Microsoft.gradient( startColorstr='#fcbe1b', endColorstr='#f85648', GradientType=0);
+}
+.dbox--color-2 .dbox__icon:after {
+    background: #fee036;
+    background: rgba(254, 224, 54, 0.81);
+}
+.dbox--color-2 .dbox__icon:before {
+    background: #fee036;
+    background: rgba(254, 224, 54, 0.64);
+}
+.dbox--color-2 .dbox__icon > i {
+    background: #fb9f28;
+}
+
+.dbox--color-3 {
+    background: rgb(183,71,247);
+    background: -moz-linear-gradient(top, rgba(183,71,247,1) 0%, rgba(108,83,220,1) 100%);
+    background: -webkit-linear-gradient(top, rgba(183,71,247,1) 0%,rgba(108,83,220,1) 100%);
+    background: linear-gradient(to bottom, rgba(183,71,247,1) 0%,rgba(108,83,220,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#b747f7', endColorstr='#6c53dc',GradientType=0 );
+}
+.dbox--color-3 .dbox__icon:after {
+    background: #b446f5;
+    background: rgba(180, 70, 245, 0.76);
+}
+.dbox--color-3 .dbox__icon:before {
+    background: #e284ff;
+    background: rgba(226, 132, 255, 0.66);
+}
+.dbox--color-3 .dbox__icon > i {
+    background: #8150e4;
+}
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
+  </head>
+  <body >
+
+
+    <div class="container-fluid">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-4">
+            <div class="dbox dbox--color-1">
+              <div class="dbox__body">
+                <span class="dbox__count">32 / 58</span>
+                <span class="dbox__title">Duplicate Files / Total Files</span>
+              </div>				
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dbox dbox--color-2">
+              <div class="dbox__body">
+                <span class="dbox__count">535.67 KB / 2.28 MB</span>
+                <span class="dbox__title">Duplicate Data / Total Data</span>
+              </div>			
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="dbox dbox--color-3">
+              <div class="dbox__body">
+                <span class="dbox__count">  0.33 Sec </span>
+                <span class="dbox__title">Process Time</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card" style="width: 70rem;">
+          <div class="card-header text-white bg-secondary"><h3> Select Files To Move </h3></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 1</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Select the files you would like to move by checking individual items.</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-9">
+                <h5>You can also move all the duplicate files by checking "Move All Files".</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 2</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Click "Save File Selections" button to download your selection.</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 3</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Run Clean up program again to complete the move of duplicate files.</h5>
+              </div>
+            </div>
+
+            <br/> 
+            <div class="row">
+                <label class="switch">
+                  <input class="form-check-input" type="checkbox" id="moveAll" onclick="toggleCheckBoxes(this);" >
+                  <span class="slider round"></span>
+                </label>
+                <label class="form-check-label" for="moveAll"><h5>Move All Files</h5></label>
+            </div> 
+
+            <div class="row">
+              <label class="switch">
+                <input class="form-check-input" type="checkbox" name="fileCheckBox" id="removeAllFisrt" onclick="uncheckFirstCheckboxes(this);">
+                <span class="slider round"></span>
+              </label>
+              <label class="form-check-label" for="removeAllFisrt"><h5>Select/Unselect First Files</h5></label>
+            </div>
+
+          </div>
+          <div class="card-footer">
+            <button type="button" class="btn btn-success" onclick="download()">Save File Selections</button>  
+          </div>
+        </div>
+
+
+
+        <div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 1</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set1file1" onclick="changeLocalStorage('localStorage1','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/favicon.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set1file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\favicon.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\favicon.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set1file2" onclick="changeLocalStorage('localStorage2','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set1file2"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2_64x64.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2_64x64.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set1file3" onclick="changeLocalStorage('localStorage3','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/favicon.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set1file3"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\favicon.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\favicon.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set1file4" onclick="changeLocalStorage('localStorage4','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set1file4"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2_64x64.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2_64x64.ico</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage1','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/favicon.ico', this);" ><div class="row"><img id="loadedImage1"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 2</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set2file1" onclick="changeLocalStorage('localStorage5','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/icon_2_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set2file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\icon_2_32x32.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\icon_2_32x32.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set2file2" onclick="changeLocalStorage('localStorage6','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set2file2"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2_32x32.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2_32x32.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set2file3" onclick="changeLocalStorage('localStorage7','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/icon_2_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set2file3"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\icon_2_32x32.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\icon_2_32x32.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set2file4" onclick="changeLocalStorage('localStorage8','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set2file4"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2_32x32.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2_32x32.ico</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage2','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/icon_2_32x32.ico', this);" ><div class="row"><img id="loadedImage2"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 3</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set3file1" onclick="changeLocalStorage('localStorage9','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/logo_3.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set3file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\logo_3.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\logo_3.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set3file2" onclick="changeLocalStorage('localStorage10','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3-removebg-preview.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set3file2"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3-removebg-preview.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3-removebg-preview.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set3file3" onclick="changeLocalStorage('localStorage11','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/logo_3.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set3file3"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\logo_3.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\logo_3.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set3file4" onclick="changeLocalStorage('localStorage12','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3-removebg-preview.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set3file4"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3-removebg-preview.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3-removebg-preview.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage3','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/logo_3.png', this);" ><div class="row"><img id="loadedImage3"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 4</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set4file1" onclick="changeLocalStorage('localStorage13','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/home_page_small.jpg', this);"><span class="slider round"></span></label><label class="form-check-label" for="set4file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\home_page_small.jpg" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\home_page_small.jpg</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set4file2" onclick="changeLocalStorage('localStorage14','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/home_page_small.jpg', this);"><span class="slider round"></span></label><label class="form-check-label" for="set4file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\home_page_small.jpg" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\home_page_small.jpg</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage4','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/home_page_small.jpg', this);" ><div class="row"><img id="loadedImage4"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 5</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file1" onclick="changeLocalStorage('localStorage15','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/favicon.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\favicon.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\favicon.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file2" onclick="changeLocalStorage('localStorage16','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file2"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_32x32.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_32x32.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file3" onclick="changeLocalStorage('localStorage17','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file3"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_64x64.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_64x64.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file4" onclick="changeLocalStorage('localStorage18','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/favicon.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file4"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\favicon.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\favicon.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file5" onclick="changeLocalStorage('localStorage19','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_32x32.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file5"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_32x32.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_32x32.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set5file6" onclick="changeLocalStorage('localStorage20','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set5file6"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_64x64.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_64x64.ico</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage5','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/favicon.ico', this);" ><div class="row"><img id="loadedImage5"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 6</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set6file1" onclick="changeLocalStorage('localStorage21','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2-removebg.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set6file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2-removebg.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2-removebg.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set6file2" onclick="changeLocalStorage('localStorage22','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2-removebg.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set6file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2-removebg.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2-removebg.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage6','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2-removebg.png', this);" ><div class="row"><img id="loadedImage6"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 7</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set7file1" onclick="changeLocalStorage('localStorage23','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set7file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\icon_2.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set7file2" onclick="changeLocalStorage('localStorage24','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set7file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\icon_2.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage7','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2.png', this);" ><div class="row"><img id="loadedImage7"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 8</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set8file1" onclick="changeLocalStorage('localStorage25','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set8file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set8file2" onclick="changeLocalStorage('localStorage26','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set8file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage8','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo.png', this);" ><div class="row"><img id="loadedImage8"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 9</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set9file1" onclick="changeLocalStorage('localStorage27','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3-_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set9file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3-_64x64.ico" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3-_64x64.ico</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set9file2" onclick="changeLocalStorage('localStorage28','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3-_64x64.ico', this);"><span class="slider round"></span></label><label class="form-check-label" for="set9file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3-_64x64.ico" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3-_64x64.ico</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage9','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3-_64x64.ico', this);" ><div class="row"><img id="loadedImage9"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 10</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set10file1" onclick="changeLocalStorage('localStorage29','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set10file1"><a href="C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3.png" >C:/Users/MakhsusAli/Desktop\Githubs\labelled-box\public\images\site\logo\logo_3.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set10file2" onclick="changeLocalStorage('localStorage30','C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set10file2"><a href="C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3.png" >C:/Users/MakhsusAli/Desktop\Web_Tracking\MVC_approachMulti\public\images\site\logo\logo_3.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage10','C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3.png', this);" ><div class="row"><img id="loadedImage10"></div></div>  <div class="card-footer text-muted"></div></div><div class="card" style="width: 70rem;"><div class="card-header"><h3 class="card-title">Duplicate files Set 11</h3><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set11file1" onclick="changeLocalStorage('localStorage31','C:/Users/MakhsusAli/Desktop/RandomTest/AndroidTesting/node_modules/getos/imgs/logo.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set11file1"><a href="C:/Users/MakhsusAli/Desktop\RandomTest\AndroidTesting\node_modules\getos\imgs\logo.png" >C:/Users/MakhsusAli/Desktop\RandomTest\AndroidTesting\node_modules\getos\imgs\logo.png</a></label></div><div class="row"><label class="switch"><input name="fileCheckBox" class="form-check-input" type="checkbox" value="" id="set11file2" onclick="changeLocalStorage('localStorage32','C:/Users/MakhsusAli/Desktop/RandomTest/CypressTest/node_modules/getos/imgs/logo.png', this);"><span class="slider round"></span></label><label class="form-check-label" for="set11file2"><a href="C:/Users/MakhsusAli/Desktop\RandomTest\CypressTest\node_modules\getos\imgs\logo.png" >C:/Users/MakhsusAli/Desktop\RandomTest\CypressTest\node_modules\getos\imgs\logo.png</a></label></div></div><div class="card-body"><input type="button" class="btn btn-primary" value="Show Image" onclick="loadImage('loadedImage11','C:/Users/MakhsusAli/Desktop/RandomTest/AndroidTesting/node_modules/getos/imgs/logo.png', this);" ><div class="row"><img id="loadedImage11"></div></div>  <div class="card-footer text-muted"></div></div>
+
+      </div>
+    </div>
+
+     <textarea id="my-textarea" readonly="true">
+     </textarea>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script >
+
+        function toggleCheckBoxes(source){
+            // checkboxes = document.getElementsByName('fileCheckBox');
+            var checkboxes = document.getElementsByName('fileCheckBox');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              checkboxes[i].checked = source.checked;
+              if (typeof checkboxes[i].onclick == "function") {
+                checkboxes[i].onclick.apply(checkboxes[i]);
+              }
+            }
+        }
+
+        function uncheckFirstCheckboxes(source){
+            var checkboxes = document.getElementsByName('fileCheckBox');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              if( (checkboxes[i].id).search("file1") !== -1){
+                checkboxes[i].checked = source.checked;
+                if (typeof checkboxes[i].onclick == "function") {
+                  checkboxes[i].onclick.apply(checkboxes[i]);
+                }
+              }
+            }
+        }
+
+
+        function loadImage(elemID, location, buttonElem){
+          var imgElement = document.getElementById(elemID);
+          if(buttonElem.value === "Show Image"){
+            imgElement.src = "file://" + location;
+            buttonElem.value = 'Hide Image';
+          }else{
+            imgElement.src = "";
+            buttonElem.value = 'Show Image';
+          }
+        }
+
+        function changeLocalStorage(key, file, checkboxElem){
+          if(checkboxElem.checked){
+            localStorage.setItem(key, file + "=true");
+          }else{
+            localStorage.setItem(key, file + "=false");
+          }
+        }
+
+        function createJsonText(){
+
+          try {
+            var dup_files = {};
+            for (let i = 1; i < dupFileCount; i++) {
+              if(localStorage.getItem("localStorage" + i)){
+                dup_files[localStorage.getItem("localStorage" + i).split("=")[0]] = localStorage.getItem("localStorage" + i).split("=")[1]
+              }
+            } 
+            document.getElementById("my-textarea").innerHTML = JSON.stringify(dup_files);
+          }
+          catch(err) {
+            alert(err);
+          }
+        }
+
+        function download(){
+          createJsonText();
+          var text = document.getElementById("my-textarea").value;
+          text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+          var blob = new Blob([text], { type: "text/plain"});
+          var anchor = document.createElement("a");
+          anchor.download = "image_finder_selection.json";
+          anchor.href = window.URL.createObjectURL(blob);
+          anchor.target ="_blank";
+          anchor.style.display = "none"; // just to be safe!
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+        }
+        localStorage.clear();
+        
+localStorage.setItem("localStorage1", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/favicon.ico=false");
+localStorage.setItem("localStorage2", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2_64x64.ico=false");
+localStorage.setItem("localStorage3", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/favicon.ico=false");
+localStorage.setItem("localStorage4", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2_64x64.ico=false");
+localStorage.setItem("localStorage5", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/icon_2_32x32.ico=false");
+localStorage.setItem("localStorage6", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2_32x32.ico=false");
+localStorage.setItem("localStorage7", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/icon_2_32x32.ico=false");
+localStorage.setItem("localStorage8", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2_32x32.ico=false");
+localStorage.setItem("localStorage9", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/logo_3.png=false");
+localStorage.setItem("localStorage10", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3-removebg-preview.png=false");
+localStorage.setItem("localStorage11", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/logo_3.png=false");
+localStorage.setItem("localStorage12", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3-removebg-preview.png=false");
+localStorage.setItem("localStorage13", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/home_page_small.jpg=false");
+localStorage.setItem("localStorage14", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/home_page_small.jpg=false");
+localStorage.setItem("localStorage15", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/favicon.ico=false");
+localStorage.setItem("localStorage16", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_32x32.ico=false");
+localStorage.setItem("localStorage17", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_64x64.ico=false");
+localStorage.setItem("localStorage18", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/favicon.ico=false");
+localStorage.setItem("localStorage19", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_32x32.ico=false");
+localStorage.setItem("localStorage20", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_64x64.ico=false");
+localStorage.setItem("localStorage21", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2-removebg.png=false");
+localStorage.setItem("localStorage22", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2-removebg.png=false");
+localStorage.setItem("localStorage23", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/icon_2.png=false");
+localStorage.setItem("localStorage24", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/icon_2.png=false");
+localStorage.setItem("localStorage25", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo.png=false");
+localStorage.setItem("localStorage26", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo.png=false");
+localStorage.setItem("localStorage27", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3-_64x64.ico=false");
+localStorage.setItem("localStorage28", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3-_64x64.ico=false");
+localStorage.setItem("localStorage29", "C:/Users/MakhsusAli/Desktop/Githubs/labelled-box/public/images/site/logo/logo_3.png=false");
+localStorage.setItem("localStorage30", "C:/Users/MakhsusAli/Desktop/Web_Tracking/MVC_approachMulti/public/images/site/logo/logo_3.png=false");
+localStorage.setItem("localStorage31", "C:/Users/MakhsusAli/Desktop/RandomTest/AndroidTesting/node_modules/getos/imgs/logo.png=false");
+localStorage.setItem("localStorage32", "C:/Users/MakhsusAli/Desktop/RandomTest/CypressTest/node_modules/getos/imgs/logo.png=false");
+
+ var dupFileCount = 32;
+
+ var dupFileSetCount = 11;
+
+    </script>
+  </body>
+</html>
