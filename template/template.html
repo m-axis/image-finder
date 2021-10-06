@@ -8,7 +8,7 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <title>Duplicate Images</title>  
-    <style>
+<style>
 
 .dbox {
     position: relative;
@@ -129,9 +129,70 @@
 .dbox--color-3 .dbox__icon > i {
     background: #8150e4;
 }
-    </style>
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch input { 
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+/* Rounded sliders */
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+</style>
   </head>
   <body >
+
+
     <div class="container-fluid">
       <div class="container">
         <div class="row">
@@ -139,7 +200,7 @@
             <div class="dbox dbox--color-1">
               <div class="dbox__body">
                 <span class="dbox__count"><%=FILES_PROCESSED%></span>
-                <span class="dbox__title">Duplicate Files Found</span>
+                <span class="dbox__title">Duplicate Files / Total Files</span>
               </div>				
             </div>
           </div>
@@ -147,7 +208,7 @@
             <div class="dbox dbox--color-2">
               <div class="dbox__body">
                 <span class="dbox__count"><%=FILE_SIZE%></span>
-                <span class="dbox__title">Duplicate Data</span>
+                <span class="dbox__title">Duplicate Data / Total Data</span>
               </div>			
             </div>
           </div>
@@ -160,17 +221,103 @@
             </div>
           </div>
         </div>
+        <div class="card" style="width: 70rem;">
+          <div class="card-header text-white bg-secondary"><h3> Select Files To Move </h3></div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 1</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Select the files you would like to move by checking individual items.</h5>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-2"></div>
+              <div class="col-md-9">
+                <h5>You can also move all the duplicate files by checking "Move All Files".</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 2</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Click "Save File Selections" button to download your selection.</h5>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-2">
+                <h4>Step 3</h4>
+              </div>
+              <div class="col-md-9">
+                <h5>Run Clean up program again to complete the move of duplicate files.</h5>
+              </div>
+            </div>
+
+            <br/> 
+            <div class="row">
+                <label class="switch">
+                  <input class="form-check-input" type="checkbox" id="moveAll" onclick="toggleCheckBoxes(this);" >
+                  <span class="slider round"></span>
+                </label>
+                <label class="form-check-label" for="moveAll"><h5>Move All Files</h5></label>
+            </div> 
+
+            <div class="row">
+              <label class="switch">
+                <input class="form-check-input" type="checkbox" name="fileCheckBox" id="removeAllFisrt" onclick="uncheckFirstCheckboxes(this);">
+                <span class="slider round"></span>
+              </label>
+              <label class="form-check-label" for="removeAllFisrt"><h5>Select/Unselect First Files</h5></label>
+            </div>
+
+          </div>
+          <div class="card-footer">
+            <button type="button" class="btn btn-success" onclick="download()">Save File Selections</button>  
+          </div>
+        </div>
+
+
 
         <%=BODY%>
 
       </div>
     </div>
 
-
+     <textarea id="my-textarea" readonly="true">
+     </textarea>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script >
+
+        function toggleCheckBoxes(source){
+            // checkboxes = document.getElementsByName('fileCheckBox');
+            var checkboxes = document.getElementsByName('fileCheckBox');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              checkboxes[i].checked = source.checked;
+              if (typeof checkboxes[i].onclick == "function") {
+                checkboxes[i].onclick.apply(checkboxes[i]);
+              }
+            }
+        }
+
+        function uncheckFirstCheckboxes(source){
+            var checkboxes = document.getElementsByName('fileCheckBox');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+              if( (checkboxes[i].id).search("file1") !== -1){
+                checkboxes[i].checked = source.checked;
+                if (typeof checkboxes[i].onclick == "function") {
+                  checkboxes[i].onclick.apply(checkboxes[i]);
+                }
+              }
+            }
+        }
+
+
         function loadImage(elemID, location, buttonElem){
           var imgElement = document.getElementById(elemID);
           if(buttonElem.value === "Show Image"){
@@ -180,9 +327,48 @@
             imgElement.src = "";
             buttonElem.value = 'Show Image';
           }
-
-
         }
+
+        function changeLocalStorage(key, file, checkboxElem){
+          if(checkboxElem.checked){
+            localStorage.setItem(key, file + "=true");
+          }else{
+            localStorage.setItem(key, file + "=false");
+          }
+        }
+
+        function createJsonText(){
+
+          try {
+            var dup_files = {};
+            for (let i = 1; i < dupFileCount; i++) {
+              if(localStorage.getItem("localStorage" + i)){
+                dup_files[localStorage.getItem("localStorage" + i).split("=")[0]] = localStorage.getItem("localStorage" + i).split("=")[1]
+              }
+            } 
+            document.getElementById("my-textarea").innerHTML = JSON.stringify(dup_files);
+          }
+          catch(err) {
+            alert(err);
+          }
+        }
+
+        function download(){
+          createJsonText();
+          var text = document.getElementById("my-textarea").value;
+          text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
+          var blob = new Blob([text], { type: "text/plain"});
+          var anchor = document.createElement("a");
+          anchor.download = "image_finder_selection.json";
+          anchor.href = window.URL.createObjectURL(blob);
+          anchor.target ="_blank";
+          anchor.style.display = "none"; // just to be safe!
+          document.body.appendChild(anchor);
+          anchor.click();
+          document.body.removeChild(anchor);
+        }
+        localStorage.clear();
+        //<%=LOCAL_STORAGE%>
     </script>
   </body>
 </html>

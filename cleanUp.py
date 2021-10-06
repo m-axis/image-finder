@@ -1,16 +1,28 @@
-import os, hashlib, collections, webbrowser, datetime, sys, time
+import os, hashlib, collections, webbrowser, datetime, sys, json, time
 start_time = datetime.datetime.now()
 #Get desktop path
-required_path = os.environ['USERPROFILE'] + "\Desktop"
 # required_path = "C:\\"
 # required_path = os.getcwd() 
 if len(sys.argv) > 1:
-    required_path = sys.argv[1]    
+    required_path = sys.argv[1]
+else:
+    required_path = os.environ['USERPROFILE'] + "\Desktop"
+
+if len(sys.argv) > 2:   
+    move_files_flag = sys.argv[2]
+else:
+    move_files_flag = False
+
 needed_ext = ["png", "jpg", "ico", "jpeg", "tif", "gif"]
+if len(sys.argv) > 3:   
+    if type(sys.argv[3]).__name__ == 'list':
+        needed_ext = sys.argv[3]
+
 
 total_file_size = 0
 duplicate_files_count = 0
 duplicate_file_size = 0
+local_storage_vars = "\n"
 
 # Print iterations progress
 def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
@@ -69,6 +81,8 @@ all_files = sum([len(files) for r, d, files in os.walk(required_path)])
 
 printProgressBar(ite, all_files + 100, prefix = 'Progress:', suffix = 'Complete', length = 50)
 total_files = 0
+
+
 ##Get All files with EXT
 find_them_all = {}
 for root, dirs, files in os.walk(required_path):
@@ -92,7 +106,7 @@ a = find_them_all.values()
 duplicates = [item for item, count in collections.Counter(a).items() if count > 1]
 
 
-
+#Working on printing the Progress
 dup_files_count = len(duplicates)
 remaining_progress = all_files + 100 - ite
 percent_now= int( (ite / (all_files + 100)) * 100 ) 
@@ -101,23 +115,36 @@ new_progress_total = total_files + dup_files_count
 if ite <= new_progress_total:
     printProgressBar(ite, new_progress_total, prefix = 'Progress:', suffix = 'Complete', length = 50)
 
-
+##Run through duplicates to arrange in a sequence
 duplicate_files = {}
+jsonified_duplicates = {}
 for location in find_them_all:
-    duplicate_files_count += 1
     ite += 1
     if ite <= new_progress_total:
         printProgressBar(ite, new_progress_total, prefix = 'Progress:', suffix = 'Complete', length = 50)
     if find_them_all[location] in duplicates:
         duplicate_file_size += os.path.getsize(location)
+        duplicate_files_count += 1
         if find_them_all[location] in duplicate_files:
             duplicate_files[find_them_all[location]].append(location)
+            jsonified_duplicates[find_them_all[location]][location] = False
         else:
             duplicate_files[find_them_all[location]] = [location] 
+            jsonified_duplicates[find_them_all[location]] = {location: False}
 
 
+pwd = os.getcwd()
+##Convert dictionary data to JSON and save the status of the files to find out if the file was moved
+json_object = json.dumps(jsonified_duplicates, indent = 4) 
+with open(f"{pwd}\\report.json", "w", encoding="UTF-8") as jsonFile:
+    jsonFile.write(json_object)
+
+
+#Convert dictionary data into HTML report
+#counter for every duplicate set of files
 counter = 1
 table_data = ""
+each_file_counter = 0
 for hash in duplicate_files:
     ite += 1
     if ite <= new_progress_total:
@@ -125,11 +152,21 @@ for hash in duplicate_files:
     table_data += '<div class="card" style="width: 70rem;">'
     table_data += '<div class="card-header">'
     table_data += f"<h3 class=\"card-title\">Duplicate files Set {counter}</h3>"
-
+    reset_counter = 0
     for file in duplicate_files[hash]:
+        each_file_counter += 1
+        reset_counter += 1
         table_data +=  '<div class="row">'
-        table_data +=     f"<a href=\"{file}\" class\"stretched-link\">{file}</a>" 
+        table_data +=       '<label class="switch">'
+        locaation_value = file.replace("\\", "/")
+        table_data +=           f"<input name=\"fileCheckBox\" class=\"form-check-input\" type=\"checkbox\" value=\"\" id=\"set{counter}file{reset_counter}\" onclick=\"changeLocalStorage('localStorage{each_file_counter}','{locaation_value}', this);\">"
+        table_data +=           '<span class="slider round"></span>'
+        table_data +=       '</label>'
+        table_data +=           f"<label class=\"form-check-label\" for=\"set{counter}file{reset_counter}\">"
+        table_data +=                   f"<a href=\"{file}\" >{file}</a>" 
+        table_data +=            '</label>'        
         table_data +=  '</div>'
+        local_storage_vars += f"localStorage.setItem(\"localStorage{each_file_counter}\", \"{locaation_value}=false\");\n"
     table_data += '</div>'
     table_data += '<div class="card-body">'  
     file_for_button = duplicate_files[hash][0].replace("\\", "/")
@@ -142,7 +179,7 @@ for hash in duplicate_files:
     table_data += '</div>' 
     counter += 1
 
-pwd = os.getcwd()
+##Replace the important data in the template html and cretae report.html file
 html_template = open(f"{pwd}\\template\\template.html", "r" ).read()
 time_taken = str(datetime.datetime.now() - start_time).split(":")
 if int(time_taken[0]):
@@ -156,11 +193,14 @@ else:
     minutes = "" 
 
 time_taken_ui = f"{hours} {minutes} {round(float(time_taken[2]), 2)} Sec "
-
-with open(f"{pwd}\\result.html", "w", encoding="UTF-8") as html:
-    html_temp = html_template.replace( "<%=FILES_PROCESSED%>", str(duplicate_files_count) )
-    html_temp = html_temp.replace( "<%=FILE_SIZE%>", get_file_size(duplicate_file_size) )
+local_storage_vars += f"\n var dupFileCount = {each_file_counter};\n"
+local_storage_vars += f"\n var dupFileSetCount = {counter - 1};\n"
+with open(f"{pwd}\\report.html", "w", encoding="UTF-8") as html:
+    html_temp = html_template.replace( "<%=FILES_PROCESSED%>", f"{str(duplicate_files_count)} / {str(total_files)}" )
+    html_temp = html_temp.replace( "<%=FILE_SIZE%>", f"{get_file_size(duplicate_file_size)} / {get_file_size(total_file_size)}" )
     html_temp = html_temp.replace( "<%=TIME_TAKEN%>", time_taken_ui )
     html_temp = html_temp.replace("<%=BODY%>", table_data) 
-    html.write(html_temp)  
-webbrowser.open('file://' + os.path.realpath(f"{pwd}\\result.html"))     
+    html_temp = html_temp.replace("//<%=LOCAL_STORAGE%>", local_storage_vars)
+    html.write(html_temp) 
+##Launch report.html file in default browser    
+webbrowser.open('file://' + os.path.realpath(f"{pwd}\\report.html"))     
