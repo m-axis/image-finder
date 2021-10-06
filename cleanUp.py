@@ -2,21 +2,18 @@ import os, hashlib, collections, webbrowser, datetime, sys, json, time
 start_time = datetime.datetime.now()
 #Get desktop path
 # required_path = "C:\\"
-# required_path = os.getcwd() 
+
 if len(sys.argv) > 1:
     required_path = sys.argv[1]
 else:
-    required_path = os.environ['USERPROFILE'] + "\Desktop"
+    # required_path = os.environ['USERPROFILE'] + "\Desktop"
+    required_path = os.getcwd() 
 
-if len(sys.argv) > 2:   
-    move_files_flag = sys.argv[2]
-else:
-    move_files_flag = False
 
 needed_ext = ["png", "jpg", "ico", "jpeg", "tif", "gif"]
-if len(sys.argv) > 3:   
-    if type(sys.argv[3]).__name__ == 'list':
-        needed_ext = sys.argv[3]
+if len(sys.argv) > 2:   
+    if type(sys.argv[2]).__name__ == 'list':
+        needed_ext = sys.argv[2]
 
 
 total_file_size = 0
