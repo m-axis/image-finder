@@ -287,7 +287,7 @@ input:checked + .slider:before {
       </div>
     </div>
 
-     <textarea id="my-textarea" readonly="true">
+
      </textarea>
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
@@ -346,16 +346,16 @@ input:checked + .slider:before {
                 dup_files[localStorage.getItem("localStorage" + i).split("=")[0]] = localStorage.getItem("localStorage" + i).split("=")[1]
               }
             } 
-            document.getElementById("my-textarea").innerHTML = JSON.stringify(dup_files);
+            return JSON.stringify(dup_files);
           }
           catch(err) {
             alert(err);
+            return "{}";
           }
         }
 
         function download(){
-          createJsonText();
-          var text = document.getElementById("my-textarea").value;
+          var text = createJsonText();
           text = text.replace(/\n/g, "\r\n"); // To retain the Line breaks.
           var blob = new Blob([text], { type: "text/plain"});
           var anchor = document.createElement("a");

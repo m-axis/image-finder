@@ -2,21 +2,20 @@ import os, hashlib, collections, webbrowser, datetime, sys, json, time
 start_time = datetime.datetime.now()
 #Get desktop path
 # required_path = "C:\\"
-# required_path = os.getcwd() 
-if len(sys.argv) > 1:
-    required_path = sys.argv[1]
-else:
-    required_path = os.environ['USERPROFILE'] + "\Desktop"
 
-if len(sys.argv) > 2:   
-    move_files_flag = sys.argv[2]
+if len(sys.argv) > 1:
+    if sys.argv[1] == "Desktop":
+        required_path = os.environ['USERPROFILE'] + "\Desktop"
+    else:
+        required_path = sys.argv[1]    
 else:
-    move_files_flag = False
+    required_path = os.getcwd() 
+
 
 needed_ext = ["png", "jpg", "ico", "jpeg", "tif", "gif"]
-if len(sys.argv) > 3:   
-    if type(sys.argv[3]).__name__ == 'list':
-        needed_ext = sys.argv[3]
+if len(sys.argv) > 2:   
+    if type(sys.argv[2]).__name__ == 'list':
+        needed_ext = sys.argv[2]
 
 
 total_file_size = 0
@@ -25,7 +24,7 @@ duplicate_file_size = 0
 local_storage_vars = "\n"
 
 # Print iterations progress
-def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
+def printProgressBar (iteration, total_, prefix = '', suffix = '', decimals = 1, length = 100, fill = '█', printEnd = "\r"):
     """
     Call in a loop to create terminal progress bar
     @params:
@@ -38,6 +37,10 @@ def printProgressBar (iteration, total, prefix = '', suffix = '', decimals = 1, 
         fill        - Optional  : bar fill character (Str)
         printEnd    - Optional  : end character (e.g. "\r", "\r\n") (Str)
     """
+    if total_ == 0:
+        total = 1 
+    else:
+        total = total_
     percent = ("{0:." + str(decimals) + "f}").format(100 * (iteration / float(total)))
     filledLength = int(length * iteration // total)
     bar = fill * filledLength + '-' * (length - filledLength)
@@ -136,9 +139,11 @@ for location in find_them_all:
 pwd = os.getcwd()
 ##Convert dictionary data to JSON and save the status of the files to find out if the file was moved
 json_object = json.dumps(jsonified_duplicates, indent = 4) 
-with open(f"{pwd}\\report.json", "w", encoding="UTF-8") as jsonFile:
-    jsonFile.write(json_object)
+def create_report_json(json_object):
+    with open(f"{pwd}\\report.json", "w", encoding="UTF-8") as jsonFile:
+        jsonFile.write(json_object)
 
+create_report_json(json_object)
 
 #Convert dictionary data into HTML report
 #counter for every duplicate set of files
@@ -203,4 +208,43 @@ with open(f"{pwd}\\report.html", "w", encoding="UTF-8") as html:
     html_temp = html_temp.replace("//<%=LOCAL_STORAGE%>", local_storage_vars)
     html.write(html_temp) 
 ##Launch report.html file in default browser    
-webbrowser.open('file://' + os.path.realpath(f"{pwd}\\report.html"))     
+webbrowser.open('file://' + os.path.realpath(f"{pwd}\\report.html"))
+
+loop = True
+if not os.path.exists(f"{pwd}\\duplicates"):
+    os.makedirs(f"{pwd}\\duplicates")
+while loop:
+    val = input("Do you wish to move the selected files? Y/N \n")
+    if val == "Y":
+        loop = True
+        from pathlib import Path
+        from glob import glob
+        downloads_path = str(Path.home() / "Downloads")
+        json_files = glob(f"{downloads_path}/image_finder_selection*.json")
+        if json_files:
+            selection_file = max(json_files, key=os.path.getctime)
+            print(selection_file)    
+            jsonFile = json.load(open(f"{pwd}\\report.json", "r", encoding="UTF-8"))  
+            selectionJSON =  json.load(open(selection_file, "r", encoding="UTF-8"))  
+            dupSet = 0
+            for hashKey in jsonFile.keys():
+                dupSet += 1
+                dupFile = 0
+                for file in jsonFile[hashKey].keys():
+                    dupFile += 1
+                    for selectionPath in selectionJSON.keys():
+                        print(selectionPath)
+                        print(file)
+                        if os.path.isfile(selectionPath) and os.path.isfile(file) and os.path.samefile(selectionPath, file) and selectionJSON[selectionPath] == "true":
+                            print(selectionPath)
+                            new_path = f"{pwd}\\duplicates\\Set{dupSet}File{dupFile}_{selectionPath.split('/')[-1]}" 
+                            print(new_path)
+                            jsonFile[hashKey][file] = new_path
+                            os.replace(selectionPath, new_path)  
+            create_report_json(json.dumps(jsonFile))                           
+        else:
+            print(f"No json file found in folder {downloads_path}. Please make sure you have downloaded the selection file in the mentioned folder.")    
+    elif val == "N":
+        loop = False
+    else:
+        loop = True        
