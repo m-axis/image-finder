@@ -4,6 +4,9 @@ Image finder is a tool which helps find all the duplicate images in your machine
 ## To execute 
 ```console
 python cleanUp.py your/folder/path ["your", "file", "extensions", "to", "check"]
+```
+
+```console
 python cleanUp.py C:/ ["png", "jpg", "ico", "jpeg", "tif", "gif"]
 ```
 
