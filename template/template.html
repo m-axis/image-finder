@@ -221,8 +221,11 @@ input:checked + .slider:before {
             </div>
           </div>
         </div>
+        <h5>File Extensions selected:</h5><%=FILE_EXT%>
         <div class="card" style="width: 70rem;">
-          <div class="card-header text-white bg-secondary"><h3> Select Files To Move </h3></div>
+          <div class="card-header text-white bg-secondary">
+            <h3> Select Files To Move </h3>
+          </div>
           <div class="card-body">
             <div class="row">
               <div class="col-md-2">
@@ -253,7 +256,7 @@ input:checked + .slider:before {
                 <h4>Step 3</h4>
               </div>
               <div class="col-md-9">
-                <h5>Run Clean up program again to complete the move of duplicate files.</h5>
+                <h5>Go back to Clean up program and follow the instructions.</h5>
               </div>
             </div>
 
@@ -280,10 +283,10 @@ input:checked + .slider:before {
           </div>
         </div>
 
-
-
-        <%=BODY%>
-
+        
+        <div id="cardContainer">
+          <%=BODY%>
+        </div>  
       </div>
     </div>
 
