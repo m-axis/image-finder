@@ -250,12 +250,16 @@ def convert_dict_to_html(duplicate_files, new_progress_total):
     "counter":counter, "each_file_counter":each_file_counter}    
 #******************************************************************
 
+
+#******************************************************************
 def create_ext_tags():
     global needed_ext
     ext_data = ""
     for ext in needed_ext:
         ext_data += f"<span class=\"badge badge-pill badge-info\">{ext}</span>"
     return {"ext_data": ext_data}    
+#******************************************************************
+
 
 #******************************************************************
 def get_execution_time():
