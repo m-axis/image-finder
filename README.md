@@ -3,12 +3,12 @@ Image finder is a tool which helps find all the duplicate images in your machine
 
 ## Execution command
 ```console
-python cleanUp.py your/folder/path ["your", "file", "extensions", "to", "check"]
+python cleanUp.py your/folder/path "your", "file", "extensions", "to", "check"
 ```
 
 ### To find the duplicates in specified folder and file extensions
 ```console
-python cleanUp.py C:/ ["png", "jpg", "ico", "jpeg", "tif", "gif"]
+python cleanUp.py C:/ "png", "jpg", "ico", "jpeg", "tif", "gif"
 ```
 
 ### To find the duplicates in the current folder and default file extensions
