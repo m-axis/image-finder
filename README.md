@@ -15,5 +15,6 @@ python cleanUp.py C:/ "png","jpg","ico","jpeg","tif","gif"
 ```console
 python cleanUp.py
 ```
-
+## Report html sample
+![title](template/SampleResult.png)
 
