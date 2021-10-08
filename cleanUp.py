@@ -28,6 +28,7 @@ needed_ext = image_ext
 file_name_suffix = start_time.strftime("%Y%m%d%H%M%S")
 report_json_path = f"{base_folder}\\report_{file_name_suffix}.json"
 report_html_path = f"{base_folder}\\report_{file_name_suffix}.html"
+report_page_folder = f"{base_folder}\\report_{file_name_suffix}"
 ite = 0
 #******************************************************************
 #******************************************************************
@@ -40,7 +41,7 @@ def set_required_path(some_path):
     if some_path == "Desktop":
         required_path = environ['USERPROFILE'] + "\\Desktop"
     elif some_path == "Downloads":
-        required_path = path.expanduser('~\\Downloads')    
+        required_path = path.expanduser('~\\Downloads') 
     elif some_path == "Documents":
         required_path = path.expanduser('~\\Documents')     
     elif path.isdir(some_path):
@@ -48,6 +49,7 @@ def set_required_path(some_path):
     else:
         print("Invalid path. System will continue with current path.{getcwd()}\n")
         required_path = getcwd()
+    print(f"Current path is set to: {required_path}\n")    
     return required_path
 
 #******************************************************************
@@ -72,7 +74,7 @@ def set_needed_ext(ext):
 #******************************************************************
 def reset_global_variables(base_dir = getcwd(), required_dir = getcwd(), ext = None):
     global ite, report_json_path, report_html_path, file_name_suffix, base_folder
-    global start_time, required_path 
+    global start_time, required_path, report_page_folder 
     start_time = datetime.now()
     ite = 0
     base_folder = base_dir
@@ -81,6 +83,7 @@ def reset_global_variables(base_dir = getcwd(), required_dir = getcwd(), ext = N
     file_name_suffix = start_time.strftime("%Y%m%d%H%M%S")
     report_json_path = f"{base_folder}\\report_{file_name_suffix}.json"
     report_html_path = f"{base_folder}\\report_{file_name_suffix}.html"
+    report_page_folder = f"{base_folder}\\report_{file_name_suffix}"
 #******************************************************************
 
 
@@ -213,9 +216,18 @@ def convert_dict_to_html(duplicate_files, new_progress_total):
     global ite
     local_storage_vars = "\n"
     counter, each_file_counter, table_data = 0, 0, ""
+
+    page_data = {}
+    max_page_card_count = 100
+    multiplier = 1
+
     for hash in duplicate_files:
         ite += 1
         counter += 1
+        if counter > multiplier * max_page_card_count:
+            page_data[f"page_{multiplier}"] = table_data
+            multiplier += 1
+            table_data = ""
         if ite <= new_progress_total:
             printProgressBar(ite, new_progress_total, prefix = 'Progress:', suffix = 'Complete', length = 50)
         table_data += '<div class="card" style="width: 70rem;">'
@@ -246,7 +258,9 @@ def convert_dict_to_html(duplicate_files, new_progress_total):
         table_data += '</div>'
         table_data += '  <div class="card-footer text-muted"></div>' 
         table_data += '</div>' 
-    return {"table_data":table_data, "local_storage_vars":local_storage_vars, 
+    if counter <= 100:    
+        page_data["page_1"] = table_data    
+    return {"page_data":page_data, "local_storage_vars":local_storage_vars, 
     "counter":counter, "each_file_counter":each_file_counter}    
 #******************************************************************
 
@@ -280,7 +294,7 @@ def get_execution_time():
 
 #******************************************************************
 ##Replace the important data in the template html and cretae report.html file
-def create_html_report(template_html_path, report_html_path, table_data, local_storage_vars, performace):
+def create_html_report(template_html_path, report_html_path, page_data, local_storage_vars, performace, report_page_folder):
     each_file_counter = performace["each_file_counter"]
     counter = performace["counter"]
     duplicate_files_count = performace["duplicate_files_count"]
@@ -290,11 +304,21 @@ def create_html_report(template_html_path, report_html_path, table_data, local_s
     html_template = open(template_html_path, "r" ).read()
     local_storage_vars += f"\n var dupFileCount = {each_file_counter};\n"
     local_storage_vars += f"\n var dupFileSetCount = {counter - 1};\n"
+    if len(page_data.keys()) > 0:
+        if not path.exists(report_page_folder):
+            makedirs(report_page_folder)
+        for page in page_data.keys():
+            if page == "page_1":
+                table_data = page_data[page]
+            with open(f"{report_page_folder}\\{page}.html", "w", encoding="UTF-8") as pageHtml:
+                pageHtml.write(page_data[page])
+    else:
+        table_data = "No duplicates found."   
     with open(report_html_path, "w", encoding="UTF-8") as html:
         html_temp = html_template.replace( "<%=FILES_PROCESSED%>", f"{str(duplicate_files_count)} / {str(total_files_count)}" )
         html_temp = html_temp.replace( "<%=FILE_SIZE%>", f"{get_file_size(duplicate_files_size)} / {get_file_size(total_files_size)}" )
         html_temp = html_temp.replace( "<%=TIME_TAKEN%>", get_execution_time() )
-        html_temp = html_temp.replace("<%=BODY%>", table_data) 
+        html_temp = html_temp.replace("<%=BODY%>", table_data)     
         html_temp = html_temp.replace("//<%=LOCAL_STORAGE%>", local_storage_vars)
         html_temp = html_temp.replace("<%=FILE_EXT%>", create_ext_tags()['ext_data'])
         html.write(html_temp) 
@@ -378,7 +402,7 @@ def undo_file_move(report_json_path):
 
 #******************************************************************
 def run_clean_up():
-    global ite, required_path, needed_ext, image_ext, report_html_path, template_html_path
+    global ite, required_path, needed_ext, image_ext, report_html_path, template_html_path, report_page_folder
 
     if len(argv) > 1:
         set_required_path(argv[1]) 
@@ -425,7 +449,7 @@ def run_clean_up():
     #Imp def call
     html_converted_report = convert_dict_to_html(duplicate_files, new_progress_total)
 
-    table_data  = html_converted_report["table_data"]
+    page_data  = html_converted_report["page_data"]
     local_storage_vars = html_converted_report["local_storage_vars"]
     counter = html_converted_report["counter"]
     each_file_counter  = html_converted_report["each_file_counter"]
@@ -439,7 +463,7 @@ def run_clean_up():
     performace["total_files_size"] = total_files_size 
 
     #Imp def call
-    create_html_report(template_html_path, report_html_path, table_data, local_storage_vars, performace) 
+    create_html_report(template_html_path, report_html_path, page_data, local_storage_vars, performace, report_page_folder) 
 
     ##Launch report.html file in default browser    
     launchBrowser('file://' + path.realpath(report_html_path))

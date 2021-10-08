@@ -1,7 +1,8 @@
 result.html
 *.json
 report.html
-report*.html
+report*
 app.py
 ../template/index.html
 duplicates
+experiment.py
